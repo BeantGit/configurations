@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+
+  <!-- 1. Connection Strings (Databases) -->
+  <connectionStrings>
+    <add name="DefaultConnection" 
+         connectionString="Server={{DBSERVER_NAME}};Database={{DBSERVER_NAME}};User Id={{DB_USER}};Password={{DB_PASSWORD}};" 
+         providerName="System.Data.SqlClient" />
+  </connectionStrings>
+
+  <!-- 2. Custom Application Settings -->
+  <appSettings>
+    <add key="AppName" value="myAnsibleWebApp" />
+    <add key="project" value="{{projectname}}" />
+    <add key="Environment" value="{{env}}" />
+    <add key="EnableLogging" value="true" />
+  </appSettings>
+  
+  <!-- 3. Application Logging Settings -->
+  <appSettings>
+    <add key="EnableLogging" value="true" />
+    <add key="LoggingLevel" value="{{LoggingLevel}}" />
+    <add key="logpath" value="{{LogPath}}" />
+  </appSettings>
+  
+  
+
+  <!-- 4. IIS and Web Server Settings (Required for both .NET Framework & .NET Core/6+) -->
+  <system.webServer>
+    
+    <!-- URL Rewriting and Redirects (requires URL Rewrite module in IIS) -->
+    <rewrite>
+      <rules>
+        <!-- Example: Enforce HTTPS -->
+        <rule name="HTTP to HTTPS redirect" stopProcessing="true">
+          <match url="(.*)" />
+          <conditions>
+            <add input="{HTTPS}" pattern="off" ignoreCase="true" />
+          </conditions>
+          <action type="Redirect" url="https://{HTTP_HOST}/{R:1}" redirectType="Permanent" />
+        </rule>
+      </rules>
+    </rewrite>
+
+    <!-- Custom error handling for IIS (overrides standard server responses) -->
+    <httpErrors errorMode="DetailedLocalOnly">
+      <remove statusCode="404" />
+      <error statusCode="404" path="/404.html" responseMode="ExecuteURL" />
+    </httpErrors>
+
+    <!-- Configure static content caching -->
+    <staticContent>
+      <clientCache cacheControlMode="UseMaxAge" cacheControlMaxAge="7.00:00:00" />
+    </staticContent>
+    
+  </system.webServer>
+
+</configuration>
