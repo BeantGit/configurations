@@ -6,3 +6,5 @@
   dest: executable/runEXE.bat
 - src: web/web.j2
   dest: web/web.config
+- src: executable/prop.j2
+  dest: executable/prop.ini
